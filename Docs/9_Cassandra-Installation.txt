@@ -1,0 +1,29 @@
+//Create new user to cassandra (not recommended to run cassandra from root)
+createuser cassandra
+-----------------------------------------------------------------
+//Cassandra downloading "after installing java"
+wget http://archive.apache.org/dist/cassandra/3.7/apache-cassandra-3.7-bin.tar.gz
+tar -zxf apache-cassandra-3.7-bin.tar.gz
+mv apache-cassandra-3.7  ~/cassandra
+--------------------------------------------------------------------------
+//making new folders to cassandra 
+sudo mkdir /var/lib/cassandra
+sudo mkdir /var/log/cassandra
+sudo chown -R $USER:$GROUP /var/lib/cassandra
+sudo chown -R $USER:$GROUP /var/log/cassandra
+-----------------------------------------------------------------------------
+//set Cassandra’s variables
+export CASSANDRA_HOME=~/cassandra
+export PATH=$PATH:$CASSANDRA_HOME/bin
+-----------------------------------------------------------------------------
+//Running Cassandra
+sudo sh ~/cassandra/bin/cassandra
+//then run 
+sudo sh ~/cassandra/bin/cqlsh
+--------------------------------------------------------------------------
+//to ensure that cassadra working after running cqlsh this following should be shown to you "starting a single node cluster"
+
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 2.2.3 | CQL spec 3.3.1 | Native protocol v4]
+Use HELP for help.
+cqlsh>

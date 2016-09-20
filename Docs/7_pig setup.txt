@@ -1,0 +1,25 @@
+//install Pig
+
+//to download pig
+cd
+wget http://www-eu.apache.org/dist/pig/pig-0.16.0/pig-0.16.0.tar.gz
+wget http://www-eu.apache.org/dist/pig/pig-0.16.0/pig-0.16.0-src.tar.gz
+----------------------------------------------------------------------------------------
+//extract pig
+tar zxvf pig-0.16.0-src.tar.gz 
+tar zxvf pig-0.16.0.tar.gz 
+----------------------------------------------------------------------------------------
+//configuration of the environment for pig
+mkdir Pig
+mv pig-0.16.0-src/* ./Pig
+----------------------------------------------------------------------------------------
+//configuration of the environmental variables
+export PIG_HOME=/home/hadoop/pig-0.16.0
+export PIG_CLASSPATH=$HADOOP_HOME/etc/hadoop
+export PATH=$PATH:/home/hadoop/Pig/bin
+----------------------------------------------------------------------------------------
+//verify installation and display pig version
+pig -version
+----------------------------------------------------------------------------------------
+//run pig's interactive shell "Grunt"
+pig -x local

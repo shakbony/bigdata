@@ -1,0 +1,108 @@
+//Postgres installaition
+1-rpm -Uvh http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm
+2-yum -y update
+3-yum install postgresql94-server postgresql94-contrib
+----------------------------------------------------------------------------
+//Initialize postgresql database
+   usr/pgsql-9.4/bin/postgresql94-setup initdb
+//start postgresql service
+   systemctl enable postgresql-9.4
+   systemctl start postgresql-9.4
+--------------------------------------------------------------------------
+//adjust iptables to access postgresql from remote systems
+firewall-cmd --permanent --add-port=5432/tcp
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --reload
+---------------------------------------------------------------------
+//make PostgreSQL work if SELinux enabled on your system.
+setsebool -P httpd_can_network_connect_db 1
+--------------------------------------------------------------------
+//Access PostgreSQL command prompt
+su - postgres
+psql
+//Set “postgres” user password
+postgres=# \password postgres 
+Enter new password: 
+Enter it again: 
+postgres=# \q
+-----------------------------------------------------------------
+//install PostgreSQL Adminpack
+//enter the command in postgresql prompt
+ CREATE EXTENSION adminpack;
+-----------------------------------------------------------------
+//Create New User and Database
+su - postgres
+createuser senthil
+createdb mydb
+//Set password to senthil user
+psql
+alter user senthil with encrypted password 'centos';
+grant all privileges on database mydb to senthil;
+-------------------------------------------------------------
+//Delete Users and Databases(optional)
+su - postgres
+dropdb <database-name>
+dropuser <user-name>
+------------------------------------------------------------
+//Configure PostgreSQL-MD5 Authentication
+vi /var/lib/pgsql/9.4/data/pg_hba.conf
+
+Then, Modify "Just type md5 only and add the second line in the IPv4 section":
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+host    all             all             192.168.1.0/24          md5
+# IPv6 local connections:
+host    all             all             ::1/128                 md5
+
+//Restart postgresql service to apply the changes
+systemctl restart postgresql-9.4
+---------------------------------------------------------------------------
+//Configure PostgreSQL-Configure TCP/IP
+vi /var/lib/pgsql/9.4/data/postgresql.conf
+
+//Find the lines:
+
+[...]
+#listen_addresses = 'localhost'
+[...]
+#port = 5432
+[...]
+
+then modify it to :
+listen_addresses = '*'
+port = 5432
+
+//Restart postgresql service to save changes
+systemctl restart postgresql-9.4
+----------------------------------------------------------------
+//Manage PostgreSQL with phpPgAdmin
+//Install phpPgAdmin
+yum install phpPgAdmin httpd
+----------------------------------------------------------------
+//phpPgAdmin configure
+vi /etc/httpd/conf.d/phpPgAdmin.conf
+
+Add
+"Require all granted" in require field 
+and add 
+"Allow from all" in allow field
+------------------------------------------------------------------	
+//Start or Restart Apache service
+systemctl enable httpd
+systemctl start httpd
+-----------------------------------------------------------------
+//Configure phpPgAdmin
+vi /etc/phpPgAdmin/config.inc.php
+
+//change the following lines to :
+1-conf['servers'][0]['host'] = 'localhost'; "instead of empty"
+2-conf['extra_login_security'] = false; "instead of true"
+3-conf['owned_only'] = true; "instead of fasle
+//then restart services 
+systemctl restart postgresql-9.4
+systemctl restart httpd
+----------------------------------------------------------------
+Now open your browser and navigate to http://ip-address/phpPgAdmin

@@ -1,0 +1,11 @@
+//install nano (CLI text editor)
+sudo yum install nano
+----------------------------------------------------------------------------------------
+//install firewalld (for firewall configurations)
+sudo yum install firewalld
+----------------------------------------------------------------------------------------
+//install wget (to download files from internet links)
+sudo yum install wget
+----------------------------------------------------------------------------------------
+//install net-tools (for handy network commands like ifconfig)
+sudo yum install net-tools

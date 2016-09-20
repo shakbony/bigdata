@@ -1,0 +1,31 @@
+//install hive
+
+//to download hive
+wget http://archive.apache.org/dist/hive/hive-0.12.0/hive-0.12.0-bin.tar.gz
+----------------------------------------------------------------------------------------
+//extract hive, rename it and change its ownership to "hadoop" user
+tar xzf hive-0.12.0-bin.tar.gz
+mv hive-0.12.0-bin hive
+chown -R hadoop hive
+----------------------------------------------------------------------------------------
+//IT'S IMPORTANT TO MOVE HIVE THE THE $HADOOP_HOME DIRECTORY
+//HERE I AM ASSUMING THAT THE HADOOP IT LOCATED IN THE "/opt"
+----------------------------------------------------------------------------------------
+//update the environmental variables in the ".bashrc"
+su - hadoop
+export HADOOP_PREFIX=/opt/hadoop/hadoop
+export HIVE_HOME=/opt/hadoop/hive
+export PATH=$HIVE_HOME/bin:$PATH
+----------------------------------------------------------------------------------------
+//before starting HIVE you need to create /tmp and /user/hive/warehouse and chmod them with g+w (add the write permission to the group of the file)
+cd /opt/hadoop/hive
+$HADOOP_HOME/bin/hadoop fs -mkdir /tmp
+$HADOOP_HOME/bin/hadoop fs -mkdir -p /user/hive/warehouse
+$HADOOP_HOME/bin/hadoop fs -chmod g+w /tmp
+$HADOOP_HOME/bin/hadoop fs -chmod g+w /user/hive/warehouse
+----------------------------------------------------------------------------------------
+//start HIVE with this command
+bin/hive
+----------------------------------------------------------------------------------------
+//exit pig's Grunt shell
+quit

@@ -1,0 +1,21 @@
+//install R and Rstudio-server
+
+//to install R
+sudo yum install -y epel-release 
+sudo yum update -y 
+sudo yum install -y R
+----------------------------------------------------------------------------------------
+//to install Rstudio 
+wget https://download2.rstudio.org/rstudio-server-rhel-0.99.903-x86_64.rpm
+sudo yum install --nogpgcheck rstudio-server-rhel-0.99.903-x86_64.rpm
+----------------------------------------------------------------------------------------
+//allow firewall to open port 8787
+sudo yum install firewalld
+
+systemctl enable firewalld
+systemctl start firewalld
+
+sudo firewall-cmd --zone=public --add-port=8787/tcp --permanent
+sudo firewall-cmd --reload
+
+

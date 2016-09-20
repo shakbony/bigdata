@@ -1,0 +1,115 @@
+//add user called hadoop (make sure that the jdk configuration like ".bashrc content" is also configured on the hadoop user environment)
+adduser hadoop
+
+//add password to the hadoop usr
+passwd hadoop
+
+//login as the hadoop user (login to the hadoop home directory)
+su - hadoop
+----------------------------------------------------------------------------------------
+//download and extract hadoop 
+
+wget http://apache.claz.org/hadoop/common/hadoop-2.6.0/hadoop-2.6.0.tar.gz
+tar xzf hadoop-2.6.0.tar.gz
+mv hadoop-2.6.0 hadoop
+----------------------------------------------------------------------------------------
+//setup the environmental variables for the hadoop
+gedit .bashrc
+
+"ADD THE FOLLOWING LINES IN THE .bashrc file"
+
+export HADOOP_HOME=/home/hadoop/hadoop
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+
+
+"THEN EXIT AND EXECUTE THE FOLLOWING COMMANDS"
+
+
+//to apply the changes you have made in the .bashrc file
+source .bashrc
+----------------------------------------------------------------------------------------
+//determine the jdk path in the hadoop environment
+gedit $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+
+"FIND export JAVA_HOME AND SET IT TO THE FOLLOWING VALUE"
+export JAVA_HOME=$JAVA_HOME
+----------------------------------------------------------------------------------------
+//configure the hadoop environment
+cd $HADOOP_HOME/etc/hadoop
+
+//configure core-site.xml
+gedit core-site.xml
+
+"ADD THE FOLLOWING TO THE CONFIGURATION"
+
+<configuration>
+<property>
+  <name>fs.default.name</name>
+    <value>hdfs://localhost:9000</value>
+</property>
+</configuration>
+----------------------------------------------------------------------------------------
+//configure yarn-site.xml
+gedit yarn-site.xml
+
+"ADD THE FOLLOWING TO THE CONFIGURATION"
+
+<configuration>
+ <property>
+  <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+ </property>
+</configuration>
+----------------------------------------------------------------------------------------
+//configure hdfs-site.xml
+gedit hdfs-site.xml
+<configuration>
+<property>
+ <name>dfs.replication</name>
+ <value>1</value>
+</property>
+
+<property>
+  <name>dfs.name.dir</name>
+    <value>file:///home/hadoop/hadoopdata/hdfs/namenode</value>
+</property>
+
+<property>
+  <name>dfs.data.dir</name>
+    <value>file:///home/hadoop/hadoopdata/hdfs/datanode</value>
+</property>
+</configuration>
+----------------------------------------------------------------------------------------
+//configure mapred-site.xml.template
+gedit mapred-site.xml.template
+
+"ADD THE FOLLOWING TO THE CONFIGURATION"
+<configuration>
+ <property>
+  <name>mapreduce.framework.name</name>
+   <value>yarn</value>
+ </property>
+</configuration>
+----------------------------------------------------------------------------------------
+//format the namenode
+hdfs namenode -format
+
+//start-dfs.sh script
+start-dfs.sh
+
+//start-yarn.sh script
+start-yarn.sh
+----------------------------------------------------------------------------------------
+//namenode can be accessed on your machine through port 50070 by entering the following in the URL of the machine browser
+localhost:50070/
+OR
+127.0.0.1:50070/
+
+//or you can access it on the same LAN from other machines by entering the following in the URL of the browser on the other machine
+<centos_machine_ip_addr>:50070/
